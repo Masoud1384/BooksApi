@@ -8,7 +8,7 @@ namespace Infrastructure.Repository
     {
         public bool Create(Author author)
         {
-            throw new NotImplementedException();
+            
         }
 
         public bool Delete(int id)
