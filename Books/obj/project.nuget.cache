@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "iPBwSiMxF0reqrZ248laRPLJ1kg8rnTq7X8I2xtnCXk5nngQ/6wwqkWuIeNvYgKwyFalMFszywukNfnD+tbsrA==",
+  "success": false,
+  "projectFilePath": "D:\\C#Projects\\Books\\Books\\Books.csproj",
+  "expectedPackageFiles": [],
+  "logs": [
+    {
+      "code": "NU1301",
+      "level": "Error",
+      "message": "Unable to load the service index for source https://api.nuget.org/v3/index.json.",
+      "libraryId": "Microsoft.AspNetCore.OpenApi"
+    }
+  ]
+}
