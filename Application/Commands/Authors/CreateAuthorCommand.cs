@@ -1,26 +1,26 @@
-﻿namespace Domain.Models
+﻿using Application.Commands.Books;
+
+namespace Application.Commands.Authors
 {
-    public class Author
+    public class CreateAuthorCommand
     {
-        public int Id { get; set; }
         public string Name { get; private set; }
         public string Nationality { get; set; }
         public string? Biography { get; set; }
         public int Age { get; set; }
-        public List<Book>? books { get; set; }
-
-        public Author()
+        public List<BookViewModel> booksVm { get; set; }
+        public CreateAuthorCommand()
         {
             
         }
 
-        public Author(string name, string nationality, string? biography, int age, List<Book>? books)
+        public CreateAuthorCommand(string name, string nationality, string? biography, int age, List<BookViewModel> booksVm)
         {
             Name = name;
             Nationality = nationality;
             Biography = biography;
             Age = age;
-            this.books = books;
+            this.booksVm = booksVm;
         }
     }
 }

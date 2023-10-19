@@ -1,10 +1,13 @@
-﻿namespace Application.Commands.Books
+﻿using Application.Commands.Authors;
+
+namespace Application.Commands.Books
 {
     public class CreateBookCommand
     {
         public string Name { get; private set; }
         public string Description { get; private set; }
         public DateTime PublishDate { get; private set; }
+        public AuthorViewModel authroVm { get; set; }
 
         public CreateBookCommand()
         {
