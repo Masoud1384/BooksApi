@@ -5,8 +5,7 @@ namespace Domain.IRepository
 {
     public interface IBookRepository
     {
-        void Update(Book book);
-
+        bool Update(Book book);
         bool Delete(int id);
         bool Create(Book book);
         Book Get(Expression<Func<Book,bool>> expression);

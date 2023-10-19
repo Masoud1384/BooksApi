@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Domain.Models;
+using System.Linq.Expressions;
 
 namespace Domain.IRepository
 {
-    internal interface IAuthorRepository
+    public interface IAuthorRepository
     {
+        bool Update(Author author);
+        bool Delete(int id);
+        bool Create(Author author);
+        Author Get(Expression<Func<Author, bool>> expression);
+        List<Author> GetAuthors();
+        List<Author> GetAuthors(Expression<Func<Author, bool>> expression);
     }
 }
