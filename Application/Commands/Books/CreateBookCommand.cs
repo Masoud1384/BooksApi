@@ -4,14 +4,15 @@ namespace Application.Commands.Books
 {
     public class CreateBookCommand
     {
-        public string Name { get; private set; }
-        public string Description { get; private set; }
-        public DateTime PublishDate { get; private set; }
-        public AuthorViewModel authroVm { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public DateTime PublishDate { get; set; }
+        public int authorId { get; set; }
+
 
         public CreateBookCommand()
         {
-            
+
         }
 
         public CreateBookCommand(string name, string description, DateTime publishDate)
@@ -19,6 +20,11 @@ namespace Application.Commands.Books
             Name = name;
             Description = description;
             PublishDate = publishDate;
+        }
+        public CreateBookCommand(string name, string description, DateTime publishDate, int authorId)
+            : this(name, description, publishDate)
+        {
+            this.authorId = authorId;
         }
     }
 }

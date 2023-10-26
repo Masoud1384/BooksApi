@@ -7,8 +7,8 @@
         {
 
         }
-        public UpdateBookCommand(int id, string name, string description, DateTime publishDate)
-            : base(name, description, publishDate)
+        public UpdateBookCommand(int id, string name, string description, DateTime publishDate,int authorId)
+            : base(name, description, publishDate,authorId)
         {
             this.id = id;
         }

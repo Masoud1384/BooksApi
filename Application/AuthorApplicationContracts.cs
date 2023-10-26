@@ -2,6 +2,7 @@
 using Domain.IRepository;
 using Domain.Models;
 using System.Linq.Expressions;
+using System.Net.Http.Headers;
 
 namespace Application
 {
@@ -13,35 +14,81 @@ namespace Application
         {
             _repository = repository;
         }
-
         public bool ActivateAuthor(int authorId)
         {
-            throw new NotImplementedException();
+            if (authorId > 0)
+            {
+                try
+                {
+                    _repository.Activate(authorId);
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                    throw;
+                }
+            }
+            return false;
         }
-
-        public bool AddUser(CreateAuthorCommand author, out int? authorId)
+        public int AddUser(CreateAuthorCommand author)
         {
-            throw new NotImplementedException();
-        }
+            var createAurhor = new Author(author.Name, author.Age, author.booksVm.Select(b =>
+            new Book(b.id, b.Name, b.Description, b.PublishDate, b.authorId)).ToList());
 
+            var returnedAuthorId = _repository.Create(createAurhor);
+            return returnedAuthorId;
+        }
         public bool DeActiveAuthor(int authorId)
         {
-            throw new NotImplementedException();
+            return _repository.DeActive(authorId);
         }
-
-        public AuthorViewModel FindAuthorBy(Expression<Func<Author, bool>> expression)
+        public AuthorViewModel FindAuthorBy(Expression<Func<AuthorViewModel, bool>> expression)
         {
-            throw new NotImplementedException();
-        }
+            //Converting the AuthorViewModel expression to Author expression
+            var parameter = Expression.Parameter(typeof(Author), "author");
+            var body = Expression.Invoke(expression, Expression.Property(parameter, "AuthorViewModel"));
+            var lambda = Expression.Lambda<Func<Author, bool>>(body, parameter);
 
+            var author = _repository.Get(lambda);
+
+            return new AuthorViewModel
+            {
+                Active = author.Active,
+                Age = author.Age,
+                id = author.Id,
+                Name = author.Name,
+                booksVm = author.books.Select(b => new Commands.Books.BookViewModel
+                {
+                    id = b.Id,
+                    authorId = b.authorId,
+                    Description = b.Description,
+                    Name = b.Name,
+                    PublishDate = b.PublishDate
+                }).ToList()
+            };
+        }
         public List<AuthorViewModel> SelectAllAuthors()
         {
-            throw new NotImplementedException();
+            return _repository.GetAuthors().Select(b => new AuthorViewModel
+            {
+                Active = b.Active,
+                Age = b.Age,
+                booksVm = b.books.Select(b => new Commands.Books.BookViewModel
+                {
+                    id = b.Id,
+                    authorId = b.authorId,
+                    Description = b.Description,
+                    Name = b.Name,
+                    PublishDate = b.PublishDate
+                }).ToList()
+            }).ToList();
         }
-
-        public bool Update(UpdateAuthorCommand author)
+        public int Update(UpdateAuthorCommand author)
         {
-            throw new NotImplementedException();
+            var updateAurhor = new Author(author.id, author.Name, author.Age, author.booksVm.Select(b =>
+            new Book(b.id, b.Name, b.Description, b.PublishDate, b.authorId)).ToList());
+            return _repository.Update(updateAurhor);
         }
     }
 }

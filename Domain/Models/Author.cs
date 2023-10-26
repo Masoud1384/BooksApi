@@ -28,5 +28,10 @@
             this.books = books;
             Active = true;
         }
+        public Author(int id,string name , int age , List<Book> books)
+            :this(name,age,books)
+        {
+            this.Id = id;
+        }
     }
 }

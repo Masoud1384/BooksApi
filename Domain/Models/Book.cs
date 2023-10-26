@@ -8,6 +8,7 @@ namespace Domain.Models
         public string Name { get; private set; }
         public string Description { get; private set; }
         public DateTime PublishDate { get; private set; }
+        public int authorId { get;private set; }
         public Author author { get; set; }
 
         public Book()
@@ -21,10 +22,14 @@ namespace Domain.Models
             Description = description;
             PublishDate = publishDate;
         }
-
-        public Book(string name, string description, DateTime publishDate, Author author) : this(name, description, publishDate)
+        public Book(string name, string description, DateTime publishDate, int authorId) : this(name, description, publishDate)
         {
-            this.author = author;
+            this.authorId= authorId;
+        }
+        public Book(int id , string name , string description , DateTime publishDate,int authorId)
+            :this(name,description,publishDate,authorId)
+        {
+            this.Id = id;
         }
     }
 }

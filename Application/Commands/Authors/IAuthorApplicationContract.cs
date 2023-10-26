@@ -6,10 +6,10 @@ namespace Application.Commands.Authors
     public interface IAuthorApplicationContract
     {
         List<AuthorViewModel> SelectAllAuthors();
-        AuthorViewModel FindAuthorBy(Expression<Func<Author, bool>> expression);
+        AuthorViewModel FindAuthorBy(Expression<Func<AuthorViewModel, bool>> expression);
         bool DeActiveAuthor(int authorId);
-        bool AddUser(CreateAuthorCommand author, out int? authorId);
-        bool Update(UpdateAuthorCommand author);
+        int AddUser(CreateAuthorCommand author);
+        int Update(UpdateAuthorCommand author);
         bool ActivateAuthor(int authorId);
     }
 }

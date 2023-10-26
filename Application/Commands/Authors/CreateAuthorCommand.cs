@@ -4,9 +4,8 @@ namespace Application.Commands.Authors
 {
     public class CreateAuthorCommand
     {
-        public string Name { get; private set; }
-        public string Nationality { get; set; }
-        public string? Biography { get; set; }
+        public string Name { get;  set; }
+        public bool Active { get; set; }
         public int Age { get; set; }
         public List<BookViewModel> booksVm { get; set; }
         public CreateAuthorCommand()
@@ -14,13 +13,12 @@ namespace Application.Commands.Authors
             
         }
 
-        public CreateAuthorCommand(string name, string nationality, string? biography, int age, List<BookViewModel> booksVm)
+        public CreateAuthorCommand(string name,bool active, int age, List<BookViewModel> booksVm)
         {
             Name = name;
-            Nationality = nationality;
-            Biography = biography;
             Age = age;
             this.booksVm = booksVm;
+            this.Active = active;
         }
     }
 }

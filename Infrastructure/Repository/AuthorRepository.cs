@@ -14,18 +14,33 @@ namespace Infrastructure.Repository
             _context = context;
         }
 
-        public bool Create(Author author)
+        public void Activate(int id)
+        {
+            var author = _context.authors.Find(id);
+            author.Activate();
+            _context.SaveChanges();
+        }
+
+        public int Create(Author author)
         {
             try
             {
                 _context.authors.Add(author);
-                var result = _context.SaveChanges();
-                return result == 1;
+                _context.SaveChanges();
+                return author.Id;
             }
             catch (Exception)
             {
-                return false;
+                return -1;
             }
+        }
+
+        public bool DeActive(int id)
+        {
+            var author = _context.authors.Find(id);
+            author.DeActive();
+            var result = _context.SaveChanges();
+            return result == 1;
         }
 
         public bool Delete(int id)
@@ -65,17 +80,17 @@ namespace Infrastructure.Repository
             return result.ToList();
         }
 
-        public bool Update(Author author)
+        public int Update(Author author)
         {
             try
             {
                 _context.authors.Update(author);
                 var result = _context.SaveChanges();
-                return result == 1;
+                return author.Id;
             }
             catch (Exception)
             {
-                return false;
+                return -1;
             }
         }
     }
