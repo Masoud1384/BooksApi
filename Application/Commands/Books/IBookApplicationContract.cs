@@ -6,8 +6,8 @@ namespace Application.Commands.Books
 {
     public interface IBookApplicationContract
     {
-        List<AuthorViewModel> SelectAllBooks();
-        AuthorViewModel FindBookBy(Expression<Func<Book, bool>> expression);
+        List<BookViewModel> SelectAllBooks();
+        BookViewModel FindBookBy(Expression<Func<Book, bool>> expression);
         bool DeActiveBook(int bookId);
         int AddBook(CreateBookCommand book);
         int Update(UpdateBookCommand book);
