@@ -6,7 +6,8 @@ namespace Domain.IRepository
     public interface IAuthorRepository
     {
         bool Update(Author author);
-        bool Delete(int id);
+        bool DeActive(int id);
+        void Activate(int id);
         bool Create(Author author);
         Author Get(Expression<Func<Author, bool>> expression);
         List<Author> GetAuthors();
