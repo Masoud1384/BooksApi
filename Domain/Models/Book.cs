@@ -9,8 +9,16 @@ namespace Domain.Models
         public string Description { get; private set; }
         public DateTime PublishDate { get; private set; }
         public int authorId { get;private set; }
+        public bool Active { get;private set; }
         public Author author { get; set; }
-
+        public void Activate()
+        {
+            this.Active = true;
+        }
+        public void DeActive()
+        {
+            this.Active = false;
+        }
         public Book()
         {
             

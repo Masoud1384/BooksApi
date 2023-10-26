@@ -9,8 +9,8 @@ namespace Application.Commands.Books
         List<AuthorViewModel> SelectAllBooks();
         AuthorViewModel FindBookBy(Expression<Func<Book, bool>> expression);
         bool DeActiveBook(int bookId);
-        bool AddBook(CreateBookCommand book, out int? bookId);
-        bool Update(UpdateBookCommand book);
+        int AddBook(CreateBookCommand book);
+        int Update(UpdateBookCommand book);
         bool ActivateBook(int bookId);
     }
 }

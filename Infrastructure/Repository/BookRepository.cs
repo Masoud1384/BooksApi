@@ -14,32 +14,40 @@ namespace Infrastructure.Repository
             _context = context;
         }
 
-        public bool Create(Book book)
+        public void Activate(int bookId)
+        {
+            var book = _context.books.Find(bookId);
+            if (book != null)
+            {
+                book.Activate();
+                _context.SaveChanges();
+            }
+        }
+
+        public int Create(Book book)
         {
             try
             {
                 _context.books.Add(book);
-                var result = _context.SaveChanges();
-                return result == 1;
+                _context.SaveChanges();
+                return book.Id;
             }
             catch (Exception)
             {
-                return false;
+                return -1;
             }
         }
 
-        public bool Delete(int id)
+        public bool DeActive(int bookId)
         {
-            try
+            var book = _context.books.Find(bookId);
+            if (book != null)
             {
-                var book = _context.books.Find(id);
+                book.DeActive();
                 var result = _context.SaveChanges();
                 return result == 1;
             }
-            catch (Exception)
-            {
-                return false;
-            }
+            return false;
         }
 
         public Book Get(Expression<Func<Book, bool>> expression)
@@ -65,17 +73,17 @@ namespace Infrastructure.Repository
             return result.ToList();
         }
 
-        public bool Update(Book book)
+        public int Update(Book book)
         {
             try
             {
                 _context.books.Update(book);
                 var result = _context.SaveChanges();
-                return result == 1;
+                return book.Id;
             }
             catch (Exception)
             {
-                return false;
+                return -1;
             }
         }
     }
