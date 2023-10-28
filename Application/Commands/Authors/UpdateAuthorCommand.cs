@@ -10,8 +10,8 @@ namespace Application.Commands.Authors
 
         }
 
-        public UpdateAuthorCommand(int id, string name, string nationality, string? biography, int age, List<BookViewModel> booksVm)
-            : base(name, nationality, biography, age, booksVm)
+        public UpdateAuthorCommand(int id, string name, bool active, int age, List<BookViewModel> booksVm)
+            : base(name, active, age, booksVm)
         {
             this.id = id;
         }
