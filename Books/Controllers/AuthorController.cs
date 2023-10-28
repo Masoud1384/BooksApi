@@ -64,7 +64,10 @@ namespace Books.Controllers
             {
                 var result = _authorApplicationContract.DeActiveAuthor(id);
                 var uri = Url.Action(nameof(Get), "Author", new { id = id }, Request.Protocol);
-                return Delete(id);
+                if (result)
+                {
+                    return Ok(result);
+                }
             }
             return BadRequest();
         }
