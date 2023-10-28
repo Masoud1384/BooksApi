@@ -2,7 +2,6 @@
 using Domain.IRepository;
 using Domain.Models;
 using System.Linq.Expressions;
-using System.Net.Http.Headers;
 
 namespace Application
 {
