@@ -1,5 +1,7 @@
-﻿using Application.Commands.Authors;
+﻿using Application;
+using Application.Commands.Authors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Operations;
 using System.Net;
 
 namespace Books.Controllers
@@ -17,7 +19,11 @@ namespace Books.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var result = _authorApplicationContract.SelectAllAuthors();
+            var result = _authorApplicationContract.SelectAllAuthors().Select(a => a.links = new List<Application.ApiLink>
+            {
+                new ApiLink(Url.Action(nameof(Get),"Author",new {id = a.id},Request.Scheme), "Self" , "Get"),
+                new ApiLink(Url.Action(nameof(Delete),"Author",new {id = a.id},Request.Scheme), "Delete" , "Delete")
+            });
             return Ok(result);
         }
 
@@ -54,8 +60,8 @@ namespace Books.Controllers
                 var result = _authorApplicationContract.Update(updateAuthorCommand);
                 if (result > 0)
                 {
-                    var uri = Url.Action(nameof(Get),"Author",new {id = result } , Request.Protocol);
-                    return StatusCode(200,uri);
+                    var uri = Url.Action(nameof(Get), "Author", new { id = result }, Request.Protocol);
+                    return StatusCode(200, uri);
                 }
             }
             return NotFound();

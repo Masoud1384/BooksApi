@@ -1,4 +1,5 @@
-﻿using Application.Commands.Books;
+﻿using Application;
+using Application.Commands.Books;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Books.Controllers
@@ -18,12 +19,18 @@ namespace Books.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var result = _bookApplicationContract.SelectAllBooks();
+            var result = _bookApplicationContract.SelectAllBooks()
+                .Select(b =>
+                b.links = new List<ApiLink>
+                {
+                    new ApiLink(Url.Action(nameof(Get),"Author",new {id = a.id},Request.Scheme), "Self" , "Get"),
+                new ApiLink(Url.Action(nameof(Delete),"Author",new {id = a.id},Request.Scheme), "Delete" , "Delete")
+                });
             return Ok(result);
         }
 
         // GET api/<BookController>/5
-        [HttpGet("{id}")]
+        [HttpGet ("{id}")]
         public IActionResult Get(int id)
         {
             var result = _bookApplicationContract.FindBookBy(b => b.Id == id);
