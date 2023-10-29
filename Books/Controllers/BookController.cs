@@ -50,13 +50,17 @@ namespace Books.Controllers
         [HttpPut]
         public IActionResult Put([FromBody] UpdateBookCommand updateBookCommand)
         {
-            var result = _bookApplicationContract.Update(updateBookCommand);
-            if (result > 0)
+            if (updateBookCommand != null)
             {
-                var uri = Url.Action(nameof(Get), "Book", result, Request.Protocol);
-                return StatusCode(204, uri);
+
+                var result = _bookApplicationContract.Update(updateBookCommand);
+                if (result > 0)
+                {
+                    var uri = Url.Action(nameof(Get), "Book", result, Request.Protocol);
+                    return Ok(uri);
+                }
             }
-            return BadRequest();
+            return NotFound();
         }
 
         // DELETE api/<BookController>/5

@@ -1,5 +1,6 @@
 ﻿using Application.Commands.Authors;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace Books.Controllers
 {
@@ -51,9 +52,13 @@ namespace Books.Controllers
             if (updateAuthorCommand != null)
             {
                 var result = _authorApplicationContract.Update(updateAuthorCommand);
-                return StatusCode(204);
+                if (result > 0)
+                {
+                    var uri = Url.Action(nameof(Get),"Author",new {id = result } , Request.Protocol);
+                    return StatusCode(200,uri);
+                }
             }
-            return BadRequest();
+            return NotFound();
         }
 
         // DELETE api/<AuthorController>/5

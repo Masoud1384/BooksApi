@@ -2,6 +2,6 @@
 {
     public class AuthorViewModel : UpdateAuthorCommand
     {
-
+        public List<ApiLink> links = new List<ApiLink>();
     }
 }
