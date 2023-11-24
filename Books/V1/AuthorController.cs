@@ -18,7 +18,7 @@ namespace Books.V1
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public virtual IActionResult Get()
         {
             var result = _authorApplicationContract.SelectAllAuthors().Select(a => a.links = new List<ApiLink>
             {
