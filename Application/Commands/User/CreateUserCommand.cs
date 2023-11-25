@@ -8,6 +8,10 @@
         public bool IsActive { get; set; }
         public string Token { get; set; }
 
+        public CreateUserCommand()
+        {
+                
+        }
         public CreateUserCommand(string username, string? email, string password, bool isActive, string token)
         {
             Username = username;

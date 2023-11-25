@@ -73,7 +73,7 @@ namespace Infrastructure.Repository
         {
             return _context.users.AsNoTracking().ToList();
         }
-        public List<User> GetAll(Expression<Func<User, bool>> expression)
+        public IEnumerable<User> GetAll(Expression<Func<User, bool>> expression)
         {
             var result = _context.users.AsNoTracking().Where(expression);
             return result.ToList();
@@ -92,5 +92,6 @@ namespace Infrastructure.Repository
                 return -1;
             }
         }
+
     }
 }
