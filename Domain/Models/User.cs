@@ -37,5 +37,14 @@ namespace Domain.Models
         {
             Token = token;
         }
+        public User(int id, string username, string? email, string password, bool isActive, string token)
+        {
+            Id = id;
+            Username = username;
+            Email = email;
+            Password = password;
+            IsActive = isActive;
+            Token = token;
+        }
     }
 }
