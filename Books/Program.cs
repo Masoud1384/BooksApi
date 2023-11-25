@@ -1,7 +1,6 @@
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +8,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDataProtection();
-
+builder.Services.AddAuthentication().AddJwtBearer("LocalAuthIssuer");
+builder.Services.AddAuthorization();
 builder.Services.AddApiVersioning(
     options =>
     {
