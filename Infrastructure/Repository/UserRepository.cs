@@ -1,7 +1,10 @@
-﻿using Domain.IRepository;
+﻿using Application.Services.IServices;
+using Domain.IRepository;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Linq.Expressions;
+using System.Text;
 
 namespace Infrastructure.Repository
 {
@@ -12,6 +15,7 @@ namespace Infrastructure.Repository
         public UserRepository(Context context)
         {
             _context = context;
+            _passwordHasher = passwordHasher;
         }
 
         public void Activate(int id)
@@ -25,7 +29,7 @@ namespace Infrastructure.Repository
         {
             try
             {
-                _context.users.Add(user);
+               _context.users.Add(user);
                 _context.SaveChanges();
                 return user.Id;
             }

@@ -1,4 +1,6 @@
-﻿namespace Application.Commands.Authors
+﻿using Application.Services;
+
+namespace Application.Commands.Authors
 {
     public class AuthorViewModel : UpdateAuthorCommand
     {

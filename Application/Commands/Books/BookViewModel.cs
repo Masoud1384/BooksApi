@@ -1,4 +1,6 @@
-﻿namespace Application.Commands.Books
+﻿using Application.Services;
+
+namespace Application.Commands.Books
 {
     public class BookViewModel : UpdateBookCommand
     {

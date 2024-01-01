@@ -1,10 +1,9 @@
-﻿using Application;
-using Domain.IRepository;
+﻿using Domain.IRepository;
 using Microsoft.Extensions.DependencyInjection;
-using Application.Commands.Authors;
-using Application.Commands.Books;
 using Infrastructure.Repository;
-using Application.Commands.User;
+using Application.IRepositories.EntititesRepositories;
+using Application.IRepositories.EntititesRepositories.IEntitiesRepositories;
+using Application.Services.IServices;
 
 namespace Infrastructure
 {
@@ -17,7 +16,8 @@ namespace Infrastructure
             services.AddScoped<IAuthorRepository, AuthorRepository>();
             services.AddScoped<IBookRepository, BookRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IUserApplicationCommand,UserApplicationContracts>
+            services.AddScoped<IUserApplicationCommand, UserApplicationContracts>();
+            services.AddScoped<IPasswordHasher, PasswordHasher>();
         }
     }
 }
