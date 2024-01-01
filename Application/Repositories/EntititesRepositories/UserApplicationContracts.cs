@@ -79,7 +79,7 @@ namespace Application.IRepositories.EntititesRepositories
         }
         public int Update(UserUpdateCommand user)
         {
-            var updateAurhor = new User(user.Id, user.Username, user.Email, user.Password, user.IsActive, user.Token);
+            var updateAurhor = new User(user.Id, user.Username, user.Email, user.Password, (bool)user.IsActive, user.Token);
             return _repository.Update(updateAurhor);
         }
     }

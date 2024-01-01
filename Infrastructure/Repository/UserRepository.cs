@@ -15,7 +15,6 @@ namespace Infrastructure.Repository
         public UserRepository(Context context)
         {
             _context = context;
-            _passwordHasher = passwordHasher;
         }
 
         public void Activate(int id)

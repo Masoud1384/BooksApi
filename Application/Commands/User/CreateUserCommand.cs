@@ -1,12 +1,16 @@
-﻿namespace Application.Commands.User
+﻿using System.Text.Json.Serialization;
+
+namespace Application.Commands.User
 {
     public class CreateUserCommand
     {
         public string Username { get; set; }
         public string? Email { get; set; }
         public string Password { get; set; }
+        [JsonIgnore]
         public bool IsActive { get; set; }
-        public string Token { get; set; }
+        [JsonIgnore]
+        public string Token { get; set; } = string.Empty;
 
         public CreateUserCommand()
         {

@@ -15,7 +15,23 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDataProtection();
 builder.Services.AddAuthorization();
-builder.Services.AddAuthentication("Brearer").AddJwtBearer();
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(configureOptions =>
+{
+    configureOptions.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidIssuer = builder.Configuration["JWT:issuer"],
+        ValidAudience = builder.Configuration["JWT:audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:key"])),
+        ValidateIssuerSigningKey = true,
+        ValidateLifetime = true
+    };
+    configureOptions.SaveToken = true;
+});
 builder.Services.AddApiVersioning(
     options =>
     {
