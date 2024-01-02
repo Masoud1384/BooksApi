@@ -3,6 +3,7 @@ using Application.IRepositories.EntititesRepositories.IEntitiesRepositories;
 using Application.Services.IServices;
 using Domain.IRepository;
 using Domain.Models;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace Application.IRepositories.EntititesRepositories
@@ -46,25 +47,21 @@ namespace Application.IRepositories.EntititesRepositories
         {
             return _repository.DeActive(userId);
         }
-        public UserViewModel FindUserBy(Expression<Func<UserViewModel, bool>> expression)
+        public UserViewModel FindUserBy(int userId)
         {
-            //Converting the userViewModel expression to user expression
-            var parameter = Expression.Parameter(typeof(User), "User");
-            var body = Expression.Invoke(expression, Expression.Property(parameter, "UserViewModel"));
-            var lambda = Expression.Lambda<Func<User, bool>>(body, parameter);
-
-            var user = _repository.Get(lambda);
-
+            var user = _repository.Get(u=>u.Id==userId);
             return new UserViewModel
             {
-                IsActive = user.IsActive,
                 Id = user.Id,
-                Username = user.Username,
+                IsActive = user.IsActive,
                 Email = user.Email,
                 Password = user.Password,
+                Username = user.Username,
                 Token = user.Token,
             };
         }
+
+
         public List<UserViewModel> SelectAllUsers()
         {
             return _repository.GetAll().Select(b => new UserViewModel

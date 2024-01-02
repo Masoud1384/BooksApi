@@ -10,7 +10,7 @@ namespace Application.Commands.User
         [JsonIgnore]
         public bool IsActive { get; set; }
         [JsonIgnore]
-        public string Token { get; set; } = string.Empty;
+        public string? Token { get; set; } = string.Empty;
 
         public CreateUserCommand()
         {

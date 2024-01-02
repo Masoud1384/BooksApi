@@ -2,8 +2,6 @@
 using Application.IRepositories.EntititesRepositories.IEntitiesRepositories;
 using Application.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.Operations;
-using System.Net;
 
 namespace Books.V1
 {

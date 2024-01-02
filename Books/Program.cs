@@ -1,37 +1,19 @@
 using Infrastructure;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using NuGet.Protocol.Core.Types;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+});
 builder.Services.AddDataProtection();
 builder.Services.AddAuthorization();
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(configureOptions =>
-{
-    configureOptions.TokenValidationParameters = new TokenValidationParameters()
-    {
-        ValidIssuer = builder.Configuration["JWT:issuer"],
-        ValidAudience = builder.Configuration["JWT:audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:key"])),
-        ValidateIssuerSigningKey = true,
-        ValidateLifetime = true
-    };
-    configureOptions.SaveToken = true;
-});
+
 builder.Services.AddApiVersioning(
     options =>
     {
@@ -42,7 +24,6 @@ builder.Services.AddApiVersioning(
 ); ;
 builder.Services.AddDbContext<Context>(c => c.UseSqlServer(builder.Configuration.GetConnectionString("Con")));
 Bootstraper.Configure(builder.Services);
-
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
@@ -51,8 +32,8 @@ if (app.Environment.IsDevelopment())
 }
 app.UseFileServer();
 app.UseHttpsRedirection();
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 app.MapGet("/", () => "Hello, World!");
 app.MapGet("/secret", (ClaimsPrincipal user) => $"Hello {user.Identity?.Name}. My secret")
