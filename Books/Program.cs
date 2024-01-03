@@ -1,7 +1,10 @@
 using Infrastructure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +16,23 @@ builder.Services.AddSwaggerGen(c =>
 });
 builder.Services.AddDataProtection();
 builder.Services.AddAuthorization();
-
+builder.Services.AddAuthentication(option =>
+{
+    option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(configureOptions =>
+{
+    configureOptions.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidIssuer = builder.Configuration["JWT:issuer"],
+        ValidAudience = builder.Configuration["JWT:audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:key"])),
+        ValidateIssuerSigningKey = true,
+        ValidateLifetime = true
+    };
+    configureOptions.SaveToken = true;
+});
 builder.Services.AddApiVersioning(
     options =>
     {

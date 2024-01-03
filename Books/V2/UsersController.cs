@@ -16,10 +16,12 @@ namespace Books.V2
     {
         private IUserApplicationCommand services;
         private IPasswordHasher _passwordHasher;
-        public UsersController(IUserApplicationCommand userService, IPasswordHasher hasher) : base(userService)
+        private IConfiguration _configuration;
+        public UsersController(IUserApplicationCommand userService, IPasswordHasher hasher, IConfiguration configuration) : base(userService)
         {
             services = userService;
             _passwordHasher = hasher;
+            _configuration = configuration;
         }
         [HttpPost]
         public IActionResult SignUp([Bind("Username", "Email", "Password")] CreateUserCommand createUserCommand)
@@ -34,17 +36,21 @@ namespace Books.V2
                 string key = "{267DC4ED-5334-4C50-A007-DC3A8396462A}";
                 var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
                 var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-
+                var expireDate = DateTime.Now.AddDays(int.Parse(_configuration.GetValue<string>("JWT:expire")));
                 var token = new JwtSecurityToken(
                     issuer: "test",
                     audience: "test",
-                    expires: DateTime.Now.AddMinutes(15),
+                    expires: expireDate,
                     notBefore: DateTime.Now,
                     claims: cliams,
                     signingCredentials: credentials
                     );
                 var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
-                createUserCommand.Token = jwtToken;
+                createUserCommand.Token = new Application.Commands.Token.TokenViewModel
+                {
+                    Token = jwtToken,
+                    Expire = expireDate
+                };
                 services.AddUser(createUserCommand);
 
                 return Ok(jwtToken);

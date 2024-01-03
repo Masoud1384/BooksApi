@@ -15,7 +15,7 @@ namespace Domain.Models
         public string? Email { get; private set; }
         public string Password { get;private set; }
         public bool IsActive { get;private set; }
-        public string Token { get; private set; }
+        public UserToken Token { get; set; }
         public User() { }
 
         public void DeActivate()
@@ -33,11 +33,11 @@ namespace Domain.Models
             Password = password;
             IsActive = true;
         }
-        public User(string username, string? email, string password, string token) : this(username, email, password)
+        public User(string username, string? email, string password, UserToken token) : this(username, email, password)
         {
             Token = token;
         }
-        public User(int id, string username, string? email, string password, bool isActive, string token)
+        public User(int id, string username, string? email, string password, bool isActive, UserToken token)
         {
             Id = id;
             Username = username;

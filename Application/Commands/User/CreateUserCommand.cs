@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Application.Commands.Token;
+using System.Text.Json.Serialization;
 
 namespace Application.Commands.User
 {
@@ -10,13 +11,13 @@ namespace Application.Commands.User
         [JsonIgnore]
         public bool IsActive { get; set; }
         [JsonIgnore]
-        public string? Token { get; set; } = string.Empty;
+        public TokenViewModel? Token { get; set; }
 
         public CreateUserCommand()
         {
                 
         }
-        public CreateUserCommand(string username, string? email, string password, bool isActive, string token)
+        public CreateUserCommand(string username, string? email, string password, bool isActive, TokenViewModel token)
         {
             Username = username;
             Email = email;

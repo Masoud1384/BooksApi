@@ -1,4 +1,6 @@
-﻿namespace Application.Commands.User
+﻿using Application.Commands.Token;
+
+namespace Application.Commands.User
 {
     public class UserUpdateCommand : CreateUserCommand
     {
@@ -7,7 +9,7 @@
         {
             
         }
-        public UserUpdateCommand(int Id, string username, string? email, string password, bool isActive, string token) : base(username, email, password, isActive, token)
+        public UserUpdateCommand(int Id, string username, string? email, string password, bool isActive, TokenViewModel token) : base(username, email, password, isActive, token)
         {
             this.Id = Id;
         }

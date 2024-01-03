@@ -57,7 +57,12 @@ namespace Application.IRepositories.EntititesRepositories
                 Email = user.Email,
                 Password = user.Password,
                 Username = user.Username,
-                Token = user.Token,
+                Token = new Commands.Token.TokenViewModel
+                {
+                    Id = user.Token.Id,
+                    Expire = user.Token.Expire,
+                    Token = user.Token.Token,
+                }
             };
         }
 
@@ -70,7 +75,12 @@ namespace Application.IRepositories.EntititesRepositories
                 IsActive = b.IsActive,
                 Email = b.Email,
                 Password = b.Password,
-                Token = b.Token,
+                Token = new Commands.Token.TokenViewModel
+                {
+                    Id = b.Token.Id,
+                    Expire = b.Token.Expire,
+                    Token = b.Token.Token,
+                },
                 Username = b.Username,
             }).ToList();
         }
