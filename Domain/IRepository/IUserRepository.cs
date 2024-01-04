@@ -12,8 +12,6 @@ namespace Domain.IRepository
         void Activate(int userId);
         int Create(User user);
         User Get(Expression<Func<User, bool>> expression);
-
-
-
+        bool SaveToken(int userId, UserToken userToken);
     }
 }

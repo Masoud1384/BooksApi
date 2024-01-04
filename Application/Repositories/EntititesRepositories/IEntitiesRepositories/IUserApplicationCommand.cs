@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+﻿using Application.Commands.Token;
 using Application.Commands.User;
 
 namespace Application.IRepositories.EntititesRepositories.IEntitiesRepositories
@@ -11,5 +11,6 @@ namespace Application.IRepositories.EntititesRepositories.IEntitiesRepositories
         int AddUser(CreateUserCommand user);
         int Update(UserUpdateCommand user);
         bool ActivateUser(int userId);
+        bool SaveToken(int userId, TokenViewModel tokenViewModel);
     }
 }

@@ -1,10 +1,9 @@
-﻿using Application.Commands.User;
+﻿using Application.Commands.Token;
+using Application.Commands.User;
 using Application.IRepositories.EntititesRepositories.IEntitiesRepositories;
 using Application.Services.IServices;
 using Domain.IRepository;
 using Domain.Models;
-using System.Collections.Generic;
-using System.Linq.Expressions;
 
 namespace Application.IRepositories.EntititesRepositories
 {
@@ -13,7 +12,7 @@ namespace Application.IRepositories.EntititesRepositories
         private IUserRepository _repository;
         private readonly IPasswordHasher _passwordHasher;
 
-        public UserApplicationContracts(IUserRepository repository , IPasswordHasher passwordHasher)
+        public UserApplicationContracts(IUserRepository repository, IPasswordHasher passwordHasher)
         {
             _repository = repository;
             _passwordHasher = passwordHasher;
@@ -49,7 +48,7 @@ namespace Application.IRepositories.EntititesRepositories
         }
         public UserViewModel FindUserBy(int userId)
         {
-            var user = _repository.Get(u=>u.Id==userId);
+            var user = _repository.Get(u => u.Id == userId);
             return new UserViewModel
             {
                 Id = user.Id,
@@ -65,7 +64,6 @@ namespace Application.IRepositories.EntititesRepositories
                 }
             };
         }
-
 
         public List<UserViewModel> SelectAllUsers()
         {
@@ -88,6 +86,21 @@ namespace Application.IRepositories.EntititesRepositories
         {
             var updateAurhor = new User(user.Id, user.Username, user.Email, user.Password, (bool)user.IsActive, user.Token);
             return _repository.Update(updateAurhor);
+        }
+
+        public bool SaveToken(int userId, TokenViewModel tokenViewModel)
+        {
+            var user = FindUserBy(userId);
+            if (user == null)
+            {
+                return _repository.SaveToken(userId, new UserToken
+                {
+                    Expire = tokenViewModel.Expire,
+                    Token = tokenViewModel.Token,
+                    Id = userId
+                });
+            }
+            return false;
         }
     }
 }

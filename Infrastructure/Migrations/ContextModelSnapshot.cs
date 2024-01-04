@@ -95,10 +95,6 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -106,6 +102,23 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("users");
+                });
+
+            modelBuilder.Entity("Domain.Models.UserToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Expire")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tokens");
                 });
 
             modelBuilder.Entity("Domain.Models.Book", b =>
@@ -119,9 +132,26 @@ namespace Infrastructure.Migrations
                     b.Navigation("author");
                 });
 
+            modelBuilder.Entity("Domain.Models.UserToken", b =>
+                {
+                    b.HasOne("Domain.Models.User", "user")
+                        .WithOne("Token")
+                        .HasForeignKey("Domain.Models.UserToken", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("user");
+                });
+
             modelBuilder.Entity("Domain.Models.Author", b =>
                 {
                     b.Navigation("books");
+                });
+
+            modelBuilder.Entity("Domain.Models.User", b =>
+                {
+                    b.Navigation("Token")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

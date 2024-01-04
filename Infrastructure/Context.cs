@@ -17,5 +17,6 @@ namespace Infrastructure
         public DbSet<Book> books { get; private set; }
         public DbSet<Author> authors { get; private set; }
         public DbSet<User> users { get; private set; }
+        public DbSet<UserToken> tokens { get; private set; }
     }
 }

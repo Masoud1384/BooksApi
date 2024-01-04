@@ -3,9 +3,11 @@ using Application.IRepositories.EntititesRepositories.IEntitiesRepositories;
 using Application.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using NuGet.Protocol.Plugins;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Application.Commands.Token;
 
 namespace Books.V2
 {
@@ -46,12 +48,13 @@ namespace Books.V2
                     signingCredentials: credentials
                     );
                 var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
-                createUserCommand.Token = new Application.Commands.Token.TokenViewModel
+                var id = services.AddUser(createUserCommand);
+                services.SaveToken(id, new TokenViewModel
                 {
+                    Expire = expireDate,
                     Token = jwtToken,
-                    Expire = expireDate
-                };
-                services.AddUser(createUserCommand);
+                    Id = id
+                });
 
                 return Ok(jwtToken);
             }
