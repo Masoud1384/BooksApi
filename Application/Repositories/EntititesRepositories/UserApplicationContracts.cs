@@ -49,20 +49,26 @@ namespace Application.IRepositories.EntititesRepositories
         public UserViewModel FindUserBy(int userId)
         {
             var user = _repository.Get(u => u.Id == userId);
-            return new UserViewModel
+            var returnUser = new UserViewModel
             {
                 Id = user.Id,
                 IsActive = user.IsActive,
                 Email = user.Email,
                 Password = user.Password,
                 Username = user.Username,
-                Token = new Commands.Token.TokenViewModel
+            };
+            if (user.Token != null)
+            {
+                returnUser.Token = new TokenViewModel
                 {
                     Id = user.Token.Id,
                     Expire = user.Token.Expire,
                     Token = user.Token.Token,
-                }
-            };
+                };
+            }
+
+
+            return returnUser;
         }
 
         public List<UserViewModel> SelectAllUsers()
@@ -91,7 +97,7 @@ namespace Application.IRepositories.EntititesRepositories
         public bool SaveToken(int userId, TokenViewModel tokenViewModel)
         {
             var user = FindUserBy(userId);
-            if (user == null)
+            if (user != null)
             {
                 return _repository.SaveToken(userId, new UserToken
                 {

@@ -14,10 +14,11 @@ namespace Infrastructure.Repository
     {
         private readonly Context _context;
         private readonly RandomNumberGenerator random = RandomNumberGenerator.Create();
-
-        public UserRepository(Context context)
+        private readonly ITokenRepository _tokenRepository;
+        public UserRepository(Context context, ITokenRepository tokenRepository)
         {
             _context = context;
+            _tokenRepository = tokenRepository;
         }
 
         public void Activate(int id)
@@ -90,7 +91,9 @@ namespace Infrastructure.Repository
                 if (user != null)
                 {
                     user.Token = userToken;
-                    return _context.SaveChanges() > 0 ? true : false;
+                    _tokenRepository.SaveToken(userToken);
+                    var result = _context.SaveChanges();
+                    return  result > 0 ? true : false;
                 }
             }
             return false;
