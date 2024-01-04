@@ -108,5 +108,10 @@ namespace Application.IRepositories.EntititesRepositories
             }
             return false;
         }
+
+        public bool IsUsernameEmailTaken(string username, string email)
+        {
+            return _repository.IsUsernameOrEmailTaken(username, email);
+        }
     }
 }

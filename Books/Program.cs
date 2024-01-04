@@ -7,7 +7,7 @@ using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -16,6 +16,14 @@ builder.Services.AddSwaggerGen(c =>
 });
 builder.Services.AddDataProtection();
 builder.Services.AddAuthorization();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:7041");
+                      });
+});
 builder.Services.AddAuthentication(option =>
 {
     option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -51,6 +59,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseFileServer();
 app.UseHttpsRedirection();
+app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

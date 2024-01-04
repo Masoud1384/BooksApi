@@ -13,5 +13,6 @@ namespace Domain.IRepository
         int Create(User user);
         User Get(Expression<Func<User, bool>> expression);
         bool SaveToken(int userId, UserToken userToken);
+        bool IsUsernameOrEmailTaken(string username, string email);
     }
 }

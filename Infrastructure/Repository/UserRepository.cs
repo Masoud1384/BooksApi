@@ -80,6 +80,12 @@ namespace Infrastructure.Repository
             var result = _context.users.AsNoTracking().Where(expression);
             return result.ToList();
         }
+
+        public bool IsUsernameOrEmailTaken(string username, string email)
+        {
+            return _context.users.Where(u => u.Username == username || u.Email == email).Count() > 0;
+        }
+
         public bool SaveToken(int userId, UserToken userToken)
         {
             if (!userToken.Token.IsNullOrEmpty())

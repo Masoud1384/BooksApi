@@ -4,6 +4,7 @@ using Infrastructure.Repository;
 using Application.IRepositories.EntititesRepositories;
 using Application.IRepositories.EntititesRepositories.IEntitiesRepositories;
 using Application.Services.IServices;
+using System.Web.Http;
 
 namespace Infrastructure
 {
@@ -19,6 +20,7 @@ namespace Infrastructure
             services.AddScoped<IUserApplicationCommand, UserApplicationContracts>();
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<ITokenRepository,UserTokenRepository>();
+            services.AddScoped<HttpConfiguration>();
         }
     }
 }

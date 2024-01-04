@@ -12,5 +12,6 @@ namespace Application.IRepositories.EntititesRepositories.IEntitiesRepositories
         int Update(UserUpdateCommand user);
         bool ActivateUser(int userId);
         bool SaveToken(int userId, TokenViewModel tokenViewModel);
+        bool IsUsernameEmailTaken(string username, string email);
     }
 }
