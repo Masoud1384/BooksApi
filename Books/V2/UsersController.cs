@@ -3,12 +3,12 @@ using Application.IRepositories.EntititesRepositories.IEntitiesRepositories;
 using Application.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using NuGet.Protocol.Plugins;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Application.Commands.Token;
 using System.Web.Http;
+using FromBodyAttribute = Microsoft.AspNetCore.Mvc.FromBodyAttribute;
 
 namespace Books.V2
 {
@@ -29,26 +29,25 @@ namespace Books.V2
             _httpConvifguration = http;
             _httpConvifguration.EnableCors();
         }
-        [Microsoft.AspNetCore.Mvc.HttpPost]
-        public IActionResult SignUp([Bind("Username", "Email", "Password")] CreateUserCommand createUserCommand)
+        [Microsoft.AspNetCore.Mvc.HttpPost("SignUp")]
+        public IActionResult SignUp([FromBody] CreateUserCommand createUserCommand)
         {
-
             if (!services.IsUsernameEmailTaken(createUserCommand.Username, createUserCommand.Email))
             {
                 var jwtToken = TokenGenerator(createUserCommand);
-                return Ok(jwtToken);
+                return Ok(new TokenCommand {Token = jwtToken.Token,RefreshToken=jwtToken.RefreshToken});
             }
             return BadRequest();
         }
         [Microsoft.AspNetCore.Mvc.HttpPost]
         [Microsoft.AspNetCore.Mvc.Route("Login")]
-        public IActionResult Login(UserViewModel user)
+        public IActionResult Login([FromBody]LoginUserDto user)
         {
-            var password = services.FindUserBy(user.Id).Password;
-            var isPassOk = _passwordHasher.VerifyPassword(password, user.Password);
-            if (isPassOk)
+            var uservm = services.FindUserBy(user.UserName);
+            var isPassOk = _passwordHasher.VerifyPassword(uservm.Password, user.Password);
+            if (isPassOk && uservm.Token.Expire > DateTime.Now)
             {
-                return Ok(user.Token);
+                return Ok(new TokenCommand { RefreshToken = uservm.Token.RefreshToken,Token = uservm.Token.Token});
             }
             return Unauthorized();
         }
@@ -67,7 +66,7 @@ namespace Books.V2
             return NotFound();
         }
 
-        private string TokenGenerator(CreateUserCommand createUserCommand)
+        private TokenViewModel TokenGenerator(CreateUserCommand createUserCommand)
         {
             var cliams = new List<Claim>()
                 {
@@ -88,15 +87,16 @@ namespace Books.V2
                 );
             var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
             var id = services.AddUser(createUserCommand);
-            services.SaveToken(id, new TokenViewModel
+            var tokenvm = new TokenViewModel
             {
                 Expire = expireDate,
                 Token = jwtToken,
                 Id = id,
                 RefreshToken = Guid.NewGuid().ToString(),
                 RefreshTokenExp = expireDate.AddDays(5)
-            });
-            return jwtToken;
+            };
+            services.SaveToken(id, tokenvm);
+            return tokenvm;
         }
     }
 }

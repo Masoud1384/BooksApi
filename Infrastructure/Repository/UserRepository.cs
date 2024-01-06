@@ -64,7 +64,7 @@ namespace Infrastructure.Repository
         {
             try
             {
-                return _context.users.FirstOrDefault(expression);
+                return _context.users.Include(u=>u.Token).FirstOrDefault(expression);
             }
             catch (Exception)
             {
@@ -97,6 +97,7 @@ namespace Infrastructure.Repository
                 if (user != null)
                 {
                     user.Token = userToken;
+
                     _tokenRepository.SaveToken(userToken);
                     var result = _context.SaveChanges();
                     return  result > 0 ? true : false;

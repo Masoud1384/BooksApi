@@ -70,6 +70,30 @@ namespace Application.IRepositories.EntititesRepositories
 
             return returnUser;
         }
+         public UserViewModel FindUserBy(string username)
+        {
+            var user = _repository.Get(u => u.Username == username);
+            var returnUser = new UserViewModel
+            {
+                Id = user.Id,
+                IsActive = user.IsActive,
+                Email = user.Email,
+                Password = user.Password,
+                Username = user.Username,
+            };
+            if (user.Token != null)
+            {
+                returnUser.Token = new TokenViewModel
+                {
+                    Id = user.Token.Id,
+                    Expire = user.Token.Expire,
+                    Token = user.Token.Token,
+                    RefreshToken = user.Token.RefreshToken,
+                    RefreshTokenExp = user.Token.RefreshTokenExp,
+                };
+            }
+            return returnUser;
+        }
 
         public List<UserViewModel> SelectAllUsers()
         {
@@ -103,7 +127,9 @@ namespace Application.IRepositories.EntititesRepositories
                 {
                     Expire = tokenViewModel.Expire,
                     Token = tokenViewModel.Token,
-                    Id = userId
+                    Id = userId,
+                    RefreshToken = tokenViewModel.RefreshToken, 
+                    RefreshTokenExp = tokenViewModel.RefreshTokenExp,
                 });
             }
             return false;

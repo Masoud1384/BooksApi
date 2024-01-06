@@ -12,7 +12,6 @@ namespace Infrastructure.Repository
             _context = context;
         }
 
-
         public void DeleteToken(int tokenId)
         {
             var token = FindToken(tokenId);
@@ -30,7 +29,7 @@ namespace Infrastructure.Repository
 
         public void SaveToken(UserToken token)
         {
-            _context.Add(token);
+            _context.tokens.Add(token);
             _context.SaveChanges();
         }
     }

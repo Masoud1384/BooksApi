@@ -7,6 +7,7 @@ namespace Application.IRepositories.EntititesRepositories.IEntitiesRepositories
     {
         List<UserViewModel> SelectAllUsers();
         UserViewModel FindUserBy(int userId);
+        UserViewModel FindUserBy(string username);
         bool DeActiveUser(int userId);
         int AddUser(CreateUserCommand user);
         int Update(UserUpdateCommand user);
