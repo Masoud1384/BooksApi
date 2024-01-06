@@ -9,6 +9,7 @@ using System.Text;
 using Application.Commands.Token;
 using System.Web.Http;
 using FromBodyAttribute = Microsoft.AspNetCore.Mvc.FromBodyAttribute;
+using Domain.IRepository;
 
 namespace Books.V2
 {
@@ -21,37 +22,61 @@ namespace Books.V2
         private IPasswordHasher _passwordHasher;
         private IConfiguration _configuration;
         private HttpConfiguration _httpConvifguration;
-        public UsersController(HttpConfiguration http,IUserApplicationCommand userService, IPasswordHasher hasher, IConfiguration configuration) : base(userService)
+        private ITokenRepository _tokenRepository;
+        public UsersController(ITokenRepository tokenRepository, HttpConfiguration http, IUserApplicationCommand userService, IPasswordHasher hasher, IConfiguration configuration) : base(userService)
         {
             services = userService;
             _passwordHasher = hasher;
             _configuration = configuration;
             _httpConvifguration = http;
             _httpConvifguration.EnableCors();
+            _tokenRepository = tokenRepository;
         }
         [Microsoft.AspNetCore.Mvc.HttpPost("SignUp")]
         public IActionResult SignUp([FromBody] CreateUserCommand createUserCommand)
         {
             if (!services.IsUsernameEmailTaken(createUserCommand.Username, createUserCommand.Email))
             {
-                var jwtToken = TokenGenerator(createUserCommand);
-                return Ok(new TokenCommand {Token = jwtToken.Token,RefreshToken=jwtToken.RefreshToken});
+                var id = services.AddUser(createUserCommand);
+                var jwtToken = TokenGenerator(new UserViewModel
+                {
+                    Id = id,
+                    IsActive = createUserCommand.IsActive,
+                    Email = createUserCommand.Email,
+                    Password = createUserCommand.Password,
+                    Username = createUserCommand.Username,
+                });
+                return Ok(new TokenDto { Token = jwtToken.Token, RefreshToken = jwtToken.RefreshToken });
             }
             return BadRequest();
         }
         [Microsoft.AspNetCore.Mvc.HttpPost]
         [Microsoft.AspNetCore.Mvc.Route("Login")]
-        public IActionResult Login([FromBody]LoginUserDto user)
+        public IActionResult Login([FromBody] LoginUserDto user)
         {
             var uservm = services.FindUserBy(user.UserName);
             var isPassOk = _passwordHasher.VerifyPassword(uservm.Password, user.Password);
             if (isPassOk && uservm.Token.Expire > DateTime.Now)
             {
-                return Ok(new TokenCommand { RefreshToken = uservm.Token.RefreshToken,Token = uservm.Token.Token});
+                return Ok(new TokenDto { RefreshToken = uservm.Token.RefreshToken, Token = uservm.Token.Token });
             }
             return Unauthorized();
         }
-
+        [Microsoft.AspNetCore.Mvc.HttpPost("RT")]
+        public IActionResult RefreshToken(string refreshToken)
+        {
+            var userToken = _tokenRepository.FindRefreshToken(refreshToken);
+            if (userToken == null)
+            {
+                return NotFound();
+            }
+            if (userToken.RefreshTokenExp < DateTime.Now)
+            {
+                return Unauthorized();
+            }
+            var newToken = _tokenRepository.CreateNewRefreshToken(refreshToken);
+            return Ok(new TokenDto { RefreshToken = newToken.RefreshToken,Token = newToken.Token});
+        }
         [Microsoft.AspNetCore.Mvc.HttpGet]
         public IActionResult GetUser(int userId)
         {
@@ -66,36 +91,36 @@ namespace Books.V2
             return NotFound();
         }
 
-        private TokenViewModel TokenGenerator(CreateUserCommand createUserCommand)
+        private TokenViewModel TokenGenerator(UserViewModel userVm)
         {
-            var cliams = new List<Claim>()
+            var cliams = new List<Claim>()  
                 {
-                    new Claim("Username",createUserCommand.Username),
-                    new Claim("Email",createUserCommand.Email),
+                    new Claim("Id",userVm.Id.ToString()),
+                    new Claim("Username",userVm.Username),
+                    new Claim("Email",userVm.Email),
                 };
             string key = "{267DC4ED-5334-4C50-A007-DC3A8396462A}";
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
             var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
             var expireDate = DateTime.Now.AddHours(int.Parse(_configuration.GetValue<string>("JWT:expire")));
             var token = new JwtSecurityToken(
-                issuer: "test",
-                audience: "test",
+                issuer: _configuration.GetValue<string>("JWT:issuer"),
+                audience: _configuration.GetValue<string>("JWT:audience"),
                 expires: expireDate,
                 notBefore: DateTime.Now,
                 claims: cliams,
                 signingCredentials: credentials
                 );
             var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
-            var id = services.AddUser(createUserCommand);
             var tokenvm = new TokenViewModel
             {
                 Expire = expireDate,
                 Token = jwtToken,
-                Id = id,
+                Id = userVm.Id,
                 RefreshToken = Guid.NewGuid().ToString(),
                 RefreshTokenExp = expireDate.AddDays(5)
             };
-            services.SaveToken(id, tokenvm);
+            services.SaveToken(userVm.Id, tokenvm);
             return tokenvm;
         }
     }

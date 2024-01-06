@@ -5,8 +5,8 @@ namespace Domain.IRepository
 {
     public interface ITokenRepository
     {
+        UserToken CreateNewRefreshToken(string refreshToken);   
         void SaveToken(UserToken token);
-        void DeleteToken(int tokenId);
-        UserToken FindToken(int tokenId);
+        UserToken FindRefreshToken(string refreshToken);
     }
 }

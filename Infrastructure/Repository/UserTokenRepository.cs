@@ -1,5 +1,6 @@
 ﻿using Domain.IRepository;
 using Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repository
 {
@@ -12,19 +13,18 @@ namespace Infrastructure.Repository
             _context = context;
         }
 
-        public void DeleteToken(int tokenId)
+        public UserToken CreateNewRefreshToken(string refreshToken)
         {
-            var token = FindToken(tokenId);
-            if (token != null)
-            {
-                _context.tokens.Remove(token);
-                _context.SaveChanges();
-            }
+            var userToken = FindRefreshToken(refreshToken);
+            userToken.RefreshToken = Guid.NewGuid().ToString();
+            userToken.RefreshTokenExp = DateTime.Now.AddDays(30);
+            _context.SaveChanges();
+            return userToken;
         }
 
-        public UserToken FindToken(int tokenId)
+        public UserToken FindRefreshToken(string refreshToken)
         {
-            return _context.tokens.Find(tokenId);
+            return _context.tokens.Include(u=>u.user).FirstOrDefault(t=>t.RefreshToken==refreshToken);
         }
 
         public void SaveToken(UserToken token)
